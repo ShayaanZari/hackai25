@@ -1,4 +1,4 @@
-import { Text, View, ActivityIndicator, TextInput, Button, StyleSheet } from "react-native";
+import { Text, View, ActivityIndicator, TextInput, Button, StyleSheet, ScrollView } from "react-native";
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'expo-router';
 
@@ -8,10 +8,11 @@ export default function Index() {
   const [data, setData] = useState("");
   const [loading, setLoading] = useState(true);
   const [input, setInput] = useState('');
+  const [sent, setSent] = useState(false);
   const [submitted, setSubmitted] = useState('');
-  const [incident, setIncident] = useState("");
-  const [sevScore, setSevScore] = useState("");
-  const [potCrime, setPotCrime] = useState("");
+  // const [incident, setIncident] = useState("");
+  // const [sevScore, setSevScore] = useState("");
+  // const [potCrime, setPotCrime] = useState("");
 
   const router = useRouter();
 
@@ -31,15 +32,14 @@ export default function Index() {
           emotion: selectedEmotion
         })
       });
-      const text = await response.text();
+      
+      const text = JSON.parse(await response.text()).output;
       console.log(`n8n response: ${text}`);
-
-      const parsed = JSON.parse(JSON.parse(text).output.replace(/```json|```/g, '').trim());
-      setIncident(parsed.incident_type);
-      setSevScore(parsed.severity_score);
-      setPotCrime(parsed.potential_crime);
-
-      console.log(potCrime);
+      setData(text);
+      // const parsed = JSON.parse(JSON.parse(text).output.replace(/```json|```/g, '').trim());
+      // setIncident(parsed.incident_type);
+      // setSevScore(parsed.severity_score);
+      // setPotCrime(parsed.potential_crime);
     } catch (error) {
       console.error('Error sending to webhook:', error);
     }
@@ -50,10 +50,12 @@ export default function Index() {
     if (selectedAge == "Prefer not to say" || selectedRelation == "Prefer not to say" || selectedEmotion == "Prefer not to say"){ console.log("fake send."); return; } // optional: prevent blank sends
     sendToWebhook(input);
     setSubmitted(input);
+    setSent(true);
     setInput(''); // clear the box after sending
   };
 
   return (
+    <ScrollView contentContainerStyle={stylesScroll.scrollContainer}>
     <View
       style={{
         flex: 1,
@@ -74,8 +76,11 @@ export default function Index() {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-      }}>{incident}{"\n"}{sevScore}{"\n"}{potCrime.toString().toUpperCase()}{"\n"}</Text>
+      }}>Data Sent: {sent.toString()}</Text>
+
+      <Text>Response: {data}</Text>
     </View>
+    </ScrollView>
   );
 }
 
@@ -102,4 +107,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontStyle: 'italic',
   },
+});
+
+const stylesScroll = StyleSheet.create({
+  scrollContainer: {
+    padding: 20,
+  },
+  innerContainer: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  label: {
+    marginBottom: 10,
+    fontSize: 16,
+  },
+  // other styles...
 });
