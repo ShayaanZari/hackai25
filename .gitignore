@@ -38,4 +38,4 @@ yarn-error.*
 app-example
 
 # Ignore large torch CPU library files
-py/**/torch/lib/
+py/**/
