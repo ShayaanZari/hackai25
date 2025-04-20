@@ -30,7 +30,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text style={{ marginBottom: 10 }}>Select the relation to your coworker:</Text>
+      <Text style={{ marginBottom: 10 }}>Select the relation to this person:</Text>
       <Picker
         selectedValue={selectedRelation}
         onValueChange={(itemValue, itemIndex) => setSelectedRelation(itemValue)}

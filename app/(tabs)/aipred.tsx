@@ -15,7 +15,7 @@ export default function Index() {
 
   const router = useRouter();
 
-  const { selectedAge, selectedRelation, selectedEmotion } = useGlobal();
+  const { selectedAge, selectedRelation, selectedEmotion, situation } = useGlobal();
 
   const sendToWebhook = async (message: string) => {
     try {
@@ -25,6 +25,7 @@ export default function Index() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          situation: situation,
           age: selectedAge,
           relation: selectedRelation,
           emotion: selectedEmotion
@@ -65,6 +66,7 @@ export default function Index() {
       <Text>Age selected: {selectedAge}</Text>
       <Text>Relationship selected: {selectedRelation}</Text>
       <Text>Emotion selected: {selectedEmotion}</Text>
+      <Text>Situation described: {situation}</Text>
 
       <Button title="Send Data" onPress={handleSend} />
 

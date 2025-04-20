@@ -7,6 +7,8 @@ type GlobalContextType = {
     setSelectedRelation: (relation: string) => void;
     selectedEmotion: string;
     setSelectedEmotion: (emotion: string) => void;
+    situation: string;
+    setSituation: (emotion: string) => void;
 };
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -15,6 +17,7 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
     const [selectedAge, setSelectedAge] = useState("Prefer not to say");
     const [selectedRelation, setSelectedRelation] = useState("Prefer not to say");
     const [selectedEmotion, setSelectedEmotion] = useState("Prefer not to say");
+    const [situation, setSituation] = useState("");
 
   return (
     <GlobalContext.Provider value={{
@@ -23,7 +26,9 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
         selectedRelation,
         setSelectedRelation,
         selectedEmotion,
-        setSelectedEmotion
+        setSelectedEmotion,
+        situation,
+        setSituation
       }}>
       {children}
     </GlobalContext.Provider>

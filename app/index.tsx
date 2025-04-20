@@ -17,7 +17,8 @@ export default function Index() {
       <Button title="Go to Age screen" onPress={() => router.push('/ageselect')} />
       <Button title="Go to Relationship screen" onPress={() => router.push('/relationship')} />
       <Button title="Go to Emotion screen" onPress={() => router.push('/emotional')} />
-      <Button title="Go to AIPred screen" onPress={() => router.push('/aipred')} />
+      <Button title="Go to Situation screen" onPress={() => router.push('/situation')} />
+      <Button title="Go to Prediction screen" onPress={() => router.push('/aipred')} />
       <Button title="Go to AI screen" onPress={() => router.push('/aichat')} />
     </View>
   );
