@@ -1,22 +1,24 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation from React Navigation
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'; // Import NativeStackNavigationProp
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-// Define your stack types
+// Update RootStackParamList to include all your screens
 type RootStackParamList = {
   InteractHaven: undefined;
   PreferencesScreen: undefined;
+  NextScreen: undefined;
 };
 
 type InteractHavenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'InteractHaven'>;
 
 const InteractHaven = () => {
-  const navigation = useNavigation<InteractHavenNavigationProp>(); // Use the specific navigation prop type
+  const navigation = useNavigation<InteractHavenNavigationProp>();
 
   // Handle press event for the image
   const handleImagePress = () => {
-    navigation.replace('PreferencesScreen'); // Navigate to PreferencesScreen using replace
+    // Use navigate instead of replace for better navigation flow
+    navigation.navigate('PreferencesScreen');
   };
 
   return (
@@ -33,9 +35,9 @@ const InteractHaven = () => {
       {/* Image Touchable to Trigger Navigation */}
       <TouchableOpacity onPress={handleImagePress}>
         <Image
-          source={require('../../assets/images/haven.png')} // Path to your image
+          source={require('../../assets/images/haven.png')}
           style={styles.image}
-          resizeMode="cover" // Ensure the image covers the space
+          resizeMode="cover"
         />
       </TouchableOpacity>
     </View>
@@ -47,15 +49,15 @@ const styles = StyleSheet.create({
   container: {
     width: 393,
     height: 852,
-    backgroundColor: 'rgba(220,212,255,0.42)', // Background color with opacity
+    backgroundColor: 'rgba(220,212,255,0.42)',
     borderRadius: 50,
     overflow: 'hidden',
-    position: 'relative', // To position layers absolutely
+    position: 'relative',
   },
   bgLayer1: {
     width: 465,
     height: 890,
-    backgroundColor: 'rgba(222,215,250,0.47)', // Light background layer
+    backgroundColor: 'rgba(222,215,250,0.47)',
     borderRadius: 71,
     position: 'absolute',
     top: 819,
@@ -64,18 +66,18 @@ const styles = StyleSheet.create({
   bgLayer2: {
     width: 346,
     height: 244,
-    backgroundColor: 'rgba(194,160,232,1)', // Accent color layer
+    backgroundColor: 'rgba(194,160,232,1)',
     borderRadius: 45,
     position: 'absolute',
     top: 22,
     left: 24,
   },
   title: {
-    color: 'rgba(236,232,252,1)', // Light color for title
+    color: 'rgba(236,232,252,1)',
     position: 'absolute',
     top: 113,
     left: 47,
-    fontFamily: 'PlayfairDisplay-Regular', // Elegant font
+    fontFamily: 'PlayfairDisplay-Regular',
     fontSize: 30,
     textAlign: 'left',
   },
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
     height: 163,
     position: 'absolute',
     top: 62,
-    left: 100, // Adjust position of the image
+    left: 100,
   },
 });
 
