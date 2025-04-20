@@ -39,3 +39,4 @@ app-example
 
 # Ignore large torch CPU library files
 py/**/
+/MyApp/
