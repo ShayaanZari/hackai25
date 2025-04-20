@@ -1,6 +1,22 @@
-import { Text, View, ActivityIndicator, TextInput, Button, StyleSheet } from "react-native";
+import { Text, View, ActivityIndicator, TextInput, Button, StyleSheet, TouchableOpacity, Pressable, ScrollView } from "react-native";
 import React, { useState, useEffect, useCallback } from 'react';
+import { Picker } from '@react-native-picker/picker';
 import { useRouter } from 'expo-router';
+import { useGlobal } from '@/context/GlobalContext';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+// Update RootStackParamList to match across files
+type RootStackParamList = {
+  ageselect: undefined;
+  relationship: undefined;
+  emotional: undefined;
+  situation: undefined;
+  aipred: undefined;
+  aichat: undefined;
+};
+
+type PreferencesScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'aichat'>;
 
 export default function Index() {
   const [data, setData] = useState("");
@@ -9,6 +25,7 @@ export default function Index() {
   const [submitted, setSubmitted] = useState('');
 
   const router = useRouter();
+  const navigation = useNavigation<PreferencesScreenNavigationProp>();
 
   const sendToWebhook = async (message: string) => {
     try {
@@ -45,11 +62,7 @@ export default function Index() {
 
   return (
     <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
+      style={ styles.container }
     >
       <Text style={styles.label}>Say something:</Text>
       
@@ -76,8 +89,10 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 75,
+    paddingBottom: 30,
+    backgroundColor: '#C2A0E8',
   },
   label: {
     marginBottom: 10,
