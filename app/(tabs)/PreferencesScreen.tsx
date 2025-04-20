@@ -7,7 +7,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 type RootStackParamList = {
   InteractHaven: undefined;
   PreferencesScreen: undefined;
-  NextScreen: undefined;
+  Relationship: undefined;
 };
 
 type PreferencesScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'PreferencesScreen'>;
@@ -35,7 +35,7 @@ const PreferencesScreen = () => {
 
   const handleSubmit = () => {
     // Navigate to NextScreen when submitted
-    navigation.navigate('NextScreen');
+    navigation.navigate('Relationship');
   };
 
   return (
@@ -49,13 +49,13 @@ const PreferencesScreen = () => {
             onPress={() => togglePreference(p)}
             style={[
               styles.card,
-              { backgroundColor: preferences.includes(p) ? '#0093ED' : 'transparent' },
+              { backgroundColor: preferences.includes(p) ? '#D7F5D1' : 'transparent' },
             ]}
           >
             <Text
               style={[
                 styles.cardText,
-                { color: preferences.includes(p) ? 'white' : '#0093ED' },
+                { color: preferences.includes(p) ? 'white' : '#EDE8FC' },
               ]}
             >
               {p}
@@ -85,24 +85,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 75,
     paddingBottom: 30,
-    backgroundColor: '#F7FAFD',
+    backgroundColor: '#C2A0E8',
   },
   title: {
-    color: '#0093ED',
+    color: '#EDE8FC',
     fontSize: 32,
     fontWeight: '900',
     marginBottom: 32,
   },
   button: {
     height: 40,
-    backgroundColor: '#0093ED',
+    backgroundColor: '#EDE8FC',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
     marginBottom: 15,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: '#C2A0E8',
     fontWeight: '500',
   },
   cardWrapper: {
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderWidth: 2,
-    borderColor: '#0093ED',
+    borderColor: '#EDE8FC',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   exitText: {
-    color: '#B497D6',
+    color: '#EDE8FC',
     textAlign: 'center',
     fontStyle: 'italic',
   },
