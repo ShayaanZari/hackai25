@@ -12,15 +12,16 @@ export default function TabTwoScreen() {
 
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#ded7fa', dark: '#5A56A4' }}
-      headerImage={null}
-      style={{ flex: 1 }}
-      contentContainerStyle={styles.scrollContent}
->
-    <ThemedView style={styles.centerContainer}>
+    headerBackgroundColor={{ light: '#ded7fa', dark: '#5A56A4' }}
+    headerImage={null}
+    style={{ flex: 1 }}
+    contentContainerStyle={{ flexGrow: 1 }}
+    >
+
       <ThemedView style={[styles.card, { backgroundColor }]} />
-    </ThemedView>
-</ParallaxScrollView>
+
+
+    </ParallaxScrollView>
   );
 }
 
@@ -48,12 +49,4 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 4, // Android shadow
   },  
-  scrollContent: {
-    flexGrow: 1,
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
 });
