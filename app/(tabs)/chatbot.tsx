@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    height: '80%',
-    width: '80%',
+    height: '85%',
+    width: '85%',
     borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
