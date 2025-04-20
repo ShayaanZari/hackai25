@@ -1,70 +1,67 @@
-import { StyleSheet, Platform } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useTransition } from '@/components/TransitionOverlay';
 
-import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function HomeScreen() {
+  const router = useRouter();
+  const { performTransition, isTransitioning } = useTransition();
+  const hasTransitioned = useRef(false);
+
+  useEffect(() => {
+    // Only perform the transition once
+    if (!hasTransitioned.current && !isTransitioning) {
+      hasTransitioned.current = true;
+      
+      // Use a short delay to ensure component is fully mounted
+      const timer = setTimeout(() => {
+        performTransition(() => router.replace('/explore'));
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [router, performTransition, isTransitioning]);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#a48fcf', dark: '#1D3D47' }}
-      headerImage={null}
+    <ThemedView style={styles.container}>
+      {/* Parallax Scroll View for your content */}
+      <ParallaxScrollView
+        headerBackgroundColor={{ light: '#ded7fa', dark: '#5A56A4' }}
+        headerImage={null}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1 }}
       >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">Unshackle</ThemedText>
+        </ThemedView>
+
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText type="subtitle">Get a fresh start</ThemedText>
+        </ThemedView>
+      </ParallaxScrollView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 8,
   },
   stepContainer: {
+    flexDirection: 'row',
     gap: 8,
     marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+    justifyContent: 'center',
   },
 });
