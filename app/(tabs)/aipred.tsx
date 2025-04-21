@@ -38,7 +38,7 @@ export default function Index() {
 
   const sendToWebhook = async (message: string) => {
     try {
-      const response = await fetch('http://0.0.0.0:5678/webhook/classify-incident', {
+      const response = await fetch('http://localhost:5678/webhook-test/classify-incident', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
