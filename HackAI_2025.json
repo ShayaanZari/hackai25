@@ -1,0 +1,306 @@
+{
+  "name": "HackAI-2025",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "/classify-incident",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        0
+      ],
+      "id": "892aa0c1-dd9e-4e49-b691-47a7d613803a",
+      "name": "Webhook",
+      "webhookId": "6faede44-8af6-4862-ae18-29168a68c010"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        220
+      ],
+      "id": "4aba5050-ce9b-4231-ab28-d29c55f76af3",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        360
+      ],
+      "id": "ac7bf31a-3cb1-461d-b66a-c4d8ff9c6ecb",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "JHbCIpuvGS0OTqa9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-pro-exp-02-05",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        200,
+        360
+      ],
+      "id": "d01988c5-99f2-4439-a057-3caa2b9515f2",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "JHbCIpuvGS0OTqa9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"incident_type\": {\n      \"type\": \"string\",\n      \"enum\": [\"coercive control\", \"surveillance\", \"verbal threats\", \"love bombing\", \"gaslighting\", \"stalking\", \"digital harassment\", \"emotional manipulation\", \"manipulation\"],\n      \"description\": \"The single most fitting category describing the incident.\"\n    },\n    \"severity_score\": {\n      \"type\": \"integer\",\n      \"minimum\": 1,\n      \"maximum\": 5,\n      \"description\": \"Severity score from 1 (low) to 5 (high).\"\n    },\n    \"potential_crime\": {\n      \"type\": \"boolean\",\n      \"description\": \"Indicates if the described actions might potentially constitute a crime.\"\n    }\n  },\n  \"required\": [\"incident_type\", \"severity_score\", \"potential_crime\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        20,
+        360
+      ],
+      "id": "f5917c3f-a476-4b19-a7cb-7d266b84f7fa",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=User's narrative entry: {{ $('Focus on Metadata').item.json.user_message }}\nContext:\n- User Age Bracket: {{ $('Focus on Metadata').item.json.age_bracket }}\n- Relationship to Perpetrator: {{ $('Focus on Metadata').item.json.relationship }}\n- User Emotional State: {{ $('Focus on Metadata').item.json.emotion }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are an expert analysis agent specializing in interpersonal conflicts and potential abuse dynamics. Analyze the provided user situation (message and context). Your task is to classify the situation based ONLY on the provided information. Respond ONLY with a valid JSON object matching the provided schema, containing three keys: 'incident_type', 'severity_score', and 'potential_crime'. Do not include any other text, greetings, or explanations outside the JSON structure.\n\nPossible values for 'incident_type': ['coercive control', 'surveillance', 'verbal threats', 'love bombing', 'gaslighting', 'stalking', 'digital harassment', 'emotional manipulation', 'manipulation']. Choose the single most fitting category based on the provided text.\n  'severity_score' must be an integer between 1 (lowest severity) and 5 (highest severity).\n  'potential_crime' must be a boolean value (true or false). Base this assessment on whether the described actions could potentially constitute a recognized crime in a general sense (e.g., threats, stalking, harassment), acknowledging this is not a legal determination.\n\nYou are also provided with three relevant cases with their incident_type, severity_score, and potential_crime included:\n{{ $json.examples }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        -140,
+        200
+      ],
+      "id": "20014b0b-97fb-41c2-a81f-e93419bfc70f",
+      "name": "Classification Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=User's narrative entry: {{ $('Focus on Metadata').item.json.user_message }}\nContext:\n- User Age Bracket: {{ $('Focus on Metadata').item.json.age_bracket }}\n- Relationship to Perpetrator: {{ $('Focus on Metadata').item.json.relationship }}\n- User Emotional State: {{ $('Focus on Metadata').item.json.emotion }}\n- Incident Type: {{ $json.output.incident_type }}\n- Potential Crime: {{ $json.output.potential_crime }}\n- Severity Score: {{ $json.output.severity_score }}",
+        "options": {
+          "systemMessage": "You are a trusted advisor providing guidance on safety and well-being. The user has provided information on their situation (narrative entry), age bracket, relationship to perpetrator, and their emotional state. You will also receive predicted information about the type of incident, whether a crime may have occurred, and a severity score.\n\nDetermine whether this user should take immediate action (e.g., contacting law enforcement, reaching out to a support hotline, or seeking professional help).\n\nProvide specific safety recommendations, tips, or resources to help the user handle or de-escalate the situation.\n\nIf appropriate, recommend contacting relevant authorities and/or local organizations. Assume they are in the U.S.\n\nTailor your response to the user’s age bracket, relationship context, emotional state, and severity of the incident.\n\nInclude a small amount of empathy and validation of the user’s emotions while focusing on offering clear, actionable advice.\n\nYour output should be in the form of Markdown paragraphs. There should be no more than 125 words."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        200,
+        200
+      ],
+      "id": "5c8d1c39-db7d-4b47-93ed-ba4417c0b1f7",
+      "name": "Recommendation Agent"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f356d945-df2c-4dc6-978f-13c91ba73076",
+              "name": "user_message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "b33a9c85-fe85-4a54-88df-ec2cb804e56b",
+              "name": "age_bracket",
+              "value": "={{ $json.body.age_bracket }}",
+              "type": "string"
+            },
+            {
+              "id": "a37a24d0-3355-44fa-a2a6-48bb95052301",
+              "name": "relationship",
+              "value": "={{ $json.body.relationship_to_perpetrator }}",
+              "type": "string"
+            },
+            {
+              "id": "9e13c2b8-83c3-43f4-9ea7-452d9965bc28",
+              "name": "emotion",
+              "value": "={{ $json.body.emotional_state }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        60,
+        0
+      ],
+      "id": "f205ab22-c761-4ca0-b0de-326570b254ce",
+      "name": "Focus on Metadata"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.169.165.246:8001/query",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "narrative_entry",
+              "value": "={{ $json.user_message }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        260,
+        0
+      ],
+      "id": "19bb0b66-40b4-432a-aca4-64a568d5522d",
+      "name": "Embed and Similarity Search",
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Focus on Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Classification Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Recommendation Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Classification Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classification Agent": {
+      "main": [
+        [
+          {
+            "node": "Recommendation Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recommendation Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Focus on Metadata": {
+      "main": [
+        [
+          {
+            "node": "Embed and Similarity Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embed and Similarity Search": {
+      "main": [
+        [
+          {
+            "node": "Classification Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1b176f19-2e5d-48b4-a959-b2df4b071c19",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8cb7a615c7635810b618d7c74f83b191d5229fa84aac69a6ba6d773b9bf0a75e"
+  },
+  "id": "GD8rU2uEI19qab2H",
+  "tags": []
+}
