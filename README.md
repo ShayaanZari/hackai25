@@ -12,6 +12,11 @@ Hope Haven provides a simple, guided experience for individuals facing difficult
 * **Recognize Escalation:** Identify patterns and predict potential danger.
 * **Connect with Resources:** Eventually connect directly with relevant and accessible support organizations that can provide the help needed.
 
+## Workflow Diagram
+<p align=center>
+<img width="944" height="500" alt="image" src="https://github.com/user-attachments/assets/cc5b4446-2075-4ff7-b314-6ba878ae1e48" />
+</p>
+
 ## How It Was Built
 
 We needed a tech stack that could be developed rapidly. Hence, we used:
